@@ -220,7 +220,7 @@ def submit_parq():
     try:
         msg = Message(
             subject=f"New PAR-Q Submission: {participant_name}",
-            recipients=['daniel@donite.com'],  # <- CHANGE TO YOUR DESIRED RECIPIENT
+            recipients=['Robbie@donite.com'],  # <- CHANGE TO YOUR DESIRED RECIPIENT
             body=f"A new PAR-Q form has been submitted for {participant_name}."
         )
 
