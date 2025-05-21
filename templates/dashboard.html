@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Participant Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      color: white;
+      padding: 40px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .card {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 12px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #f9ca24;
+    }
+    table {
+      background-color: white;
+      color: black;
+    }
+    thead {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2>Participant Submission Records</h2>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <form id="clearDataForm" method="POST" action="/clear-db" onsubmit="return confirm('Are you sure you want to clear all data?');">
+  <button type="submit" class="btn btn-danger mb-3">Clear All Data</button>
+</form>
+
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Event Date</th>
+              <th>Submitted On</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in participants %}
+            <tr>
+              <td>{{ p.participant_name }}</td>
+              <td>{{ p.event_date.strftime('%d-%m-%Y') }}</td>
+              <td>{{ p.submitted_on.strftime('%d-%m-%Y') }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
