@@ -259,30 +259,36 @@ def submit_parq():
     )
 
 
+import logging
+
 @app.route('/download-excel')
 def download_excel():
-    participants = ParticipantSummary.query.order_by(ParticipantSummary.event_date.asc()).all()
+    try:
+        participants = ParticipantSummary.query.order_by(ParticipantSummary.event_date.asc()).all()
 
-    data = [{
-        'Name': p.participant_name,
-        'Event Date': p.event_date.strftime('%d-%m-%Y'),
-        'Submitted On': p.submitted_on.strftime('%d-%m-%Y')
-    } for p in participants]
+        data = [{
+            'Name': p.participant_name,
+            'Event Date': p.event_date.strftime('%d-%m-%Y'),
+            'Submitted On': p.submitted_on.strftime('%d-%m-%Y')
+        } for p in participants]
 
-    df = pd.DataFrame(data)
+        df = pd.DataFrame(data)
 
-    output = BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Participants')
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Participants')
 
-    output.seek(0)
+        output.seek(0)
 
-    return send_file(
-        output,
-        download_name="participant_data.xlsx",
-        as_attachment=True,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+        return send_file(
+            output,
+            download_name="participant_data.xlsx",
+            as_attachment=True,
+            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+    except Exception as e:
+        logging.error("Error generating Excel file", exc_info=True)
+        return "Internal Server Error: Could not generate Excel file", 500
 
 
 @app.route('/clear-db', methods=['POST'])
