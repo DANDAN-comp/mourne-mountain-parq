@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, send_file
+from flask import Flask, request, jsonify, render_template, redirect, url_for, send_file, make_response
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -9,6 +9,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.pagesizes import letter
 from io import BytesIO
 from reportlab.pdfbase.pdfmetrics import stringWidth
+import pandas as pd
 
 
 
@@ -147,9 +148,9 @@ def generate_filled_pdf(participant_name, event_date, answers, extra_info):
 
     # Step 3: Contact & Declarations
     write_line("Step 3: Contact & Declarations")
-    write_line(f"Mobile Number: {extra_info.get('mobile', 'Not provided')}")
-    write_line(f"Emergency Contact: {extra_info.get('emContact', 'Not provided')}")
-    write_line(f"Submission Date: {format_date(extra_info.get('formSubmissionDate'))}")
+    write_line(f"Partcipant's Mobile Number: {extra_info.get('mobile', 'Not provided')}")
+    write_line(f"Emergency Contact Name: {extra_info.get('emContact', 'Not provided')}")
+    write_line(f"Emergency Contact Phone: {extra_info.get('Phone', 'Not provided')}")
     write_line("")
     write_line("-" * 80)
     write_line("")
@@ -177,6 +178,19 @@ def dashboard():
     participants = ParticipantSummary.query.order_by(ParticipantSummary.event_date.asc()).all()
     return render_template('dashboard.html', participants=participants)
 
+@app.route('/delete-selected', methods=['POST'])
+def delete_selected():
+    try:
+        ids = request.form.getlist('delete_ids')
+        if ids:
+            ParticipantSummary.query.filter(ParticipantSummary.id.in_(ids)).delete(synchronize_session=False)
+            db.session.commit()
+        return redirect(url_for('dashboard'))
+    except Exception as e:
+        db.session.rollback()
+        return f"Error deleting records: {e}", 500
+
+
 
 @app.route('/submit-parq', methods=['POST'])
 def submit_parq():
@@ -193,6 +207,7 @@ def submit_parq():
     extra_info = {
         'mobile': data.get('mobile'),
         'emContact': data.get('emContact'),
+        'Phone': data.get('Phone'),
         'formSubmissionDate': data.get('formSubmissionDate'),
         'declaration1': data.get('declaration1'),
         'declaration2': data.get('declaration2'),
@@ -220,7 +235,7 @@ def submit_parq():
     try:
         msg = Message(
             subject=f"New PAR-Q Submission: {participant_name}",
-            recipients=['Robbie@donite.com'],  # <- CHANGE TO YOUR DESIRED RECIPIENT
+            recipients=['daniel@donite.com'],
             body=f"A new PAR-Q form has been submitted for {participant_name}."
         )
 
@@ -243,6 +258,30 @@ def submit_parq():
         download_name=f'{participant_name}_parq.pdf'
     )
 
+
+@app.route('/download-excel')
+def download_excel():
+    participants = ParticipantSummary.query.order_by(ParticipantSummary.event_date.asc()).all()
+
+    # Convert records to a list of dicts
+    data = [{
+        'Name': p.participant_name,
+        'Event Date': p.event_date.strftime('%d-%m-%Y'),
+        'Submitted On': p.submitted_on.strftime('%d-%m-%Y')
+    } for p in participants]
+
+    df = pd.DataFrame(data)
+
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Participants')
+
+    output.seek(0)
+
+    response = make_response(output.read())
+    response.headers['Content-Disposition'] = 'attachment; filename=participant_data.xlsx'
+    response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    return response
 
 @app.route('/clear-db', methods=['POST'])
 def clear_db():

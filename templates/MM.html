@@ -186,7 +186,7 @@ activity?</div>
               </select>
               <div class="mb-2">12. Do you have asthma, or exercise induced asthma?, if so are you required to
 carry an inhaler? (Inhalers must be carried at all times, failure to do so will result in you not being able to take
-part in the activity as Mourne Mountain Adventures cannot provide insurance to cover you.)</div>
+part in the activity.)</div>
               <select class="form-select mb-3" name="q12" required>
                 <option value="">Select</option>
                 <option value="Yes">Yes</option>
@@ -230,21 +230,21 @@ your person or ruck sack. ) </div>
                 <label for="eventDate" class="form-label">Date of Event</label>
                 <input type="date" id="eventDate" name="eventDate" class="form-control" required>
               </div>
-              <div class="mb-3">
-                <label for="mobile" class="form-label">Mobile Number</label>
-                <input type="tel" id="mobile" name="mobile" class="form-control" required>
-              </div>
-              <div class="mb-3">
-                <label for="emContact" class="form-label">Emergency Contact</label>
-                <input type="text" id="emContact" name="emContact" class="form-control" placeholder="Name & Phone" required>
-              </div>
-              <div class="mb-3">
+                  <div class="mb-3">
                 <label for="participantName" class="form-label">Participant’s Name</label>
                 <input type="text" id="participantName" name="participantName" class="form-control" placeholder="Name" required>
               </div>
               <div class="mb-3">
-                <label for="formSubmissionDate" class="form-label">Date of Form Submission</label>
-                <input type="date" id="formSubmissionDate" name="formSubmissionDate" class="form-control" required>
+                <label for="mobile" class="form-label">Participant’s Mobile Number</label>
+                <input type="tel" id="mobile" name="mobile" class="form-control" placeholder="Mobile Number" required>
+              </div>
+              <div class="mb-3">
+                <label for="emContact" class="form-label">Emergency Contact Name</label>
+                <input type="text" id="emContact" name="emContact" class="form-control" placeholder="Name & Phone" required>
+              </div>
+                <div class="mb-3">
+                <label for="Phone" class="form-label">Emergency Contact Phone</label>
+                <input type="tel" id="Phone" name="Phone" class="form-control" placeholder="Phone Number" required>
               </div>
 
 
@@ -258,7 +258,7 @@ your person or ruck sack. ) </div>
               <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" id="declaration2" name="declaration2" required>
                 <label class="form-check-label" for="declaration2">
-                  I release and discharge Mourne Mountain Adventures and their staff for any claim, injuries, losses, or liabilities from participation.
+                  I release and discharge Mourne Mountain Adventures and their staff for any claim, injuries, losses, or liabilities suffered or incurred as a result of my participation in this event.
                 </label>
               </div>
               <div class="form-check mb-3">
@@ -352,7 +352,7 @@ your person or ruck sack. ) </div>
         await Swal.fire({
           icon: 'success',
           title: 'Form submitted successfully!💪💪🏆🎉',
-          text: 'The submitted form has been emailed to our Admin!',
+          text: 'The submitted form has been emailed to our Admin Department!',
           timer: 3000,
           showConfirmButton: false
         });
