@@ -263,7 +263,6 @@ def submit_parq():
 def download_excel():
     participants = ParticipantSummary.query.order_by(ParticipantSummary.event_date.asc()).all()
 
-    # Convert records to a list of dicts
     data = [{
         'Name': p.participant_name,
         'Event Date': p.event_date.strftime('%d-%m-%Y'),
@@ -278,10 +277,13 @@ def download_excel():
 
     output.seek(0)
 
-    response = make_response(output.read())
-    response.headers['Content-Disposition'] = 'attachment; filename=participant_data.xlsx'
-    response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    return response
+    return send_file(
+        output,
+        download_name="participant_data.xlsx",
+        as_attachment=True,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
 
 @app.route('/clear-db', methods=['POST'])
 def clear_db():

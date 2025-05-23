@@ -32,43 +32,40 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h2>Participant Submission Records</h2>
-        <div class="mb-3">
-<div class="d-flex justify-content-between mb-3">
-  <form id="deleteSelectedForm" method="POST" action="/delete-selected" onsubmit="return confirm('Delete selected records?');" class="mb-0">
-    <button type="submit" class="btn btn-danger">Delete Selected</button>
-</form>
-  <a href="/download-excel" class="btn btn-success">Download as Excel file</a>
-
+  <div class="container-fluid">
+  <div class="card">
+    <h2>Participant Submission Records</h2>
+    <form id="deleteSelectedForm" method="POST" action="/delete-selected" onsubmit="return confirm('Delete selected records?');" class="mb-3">
+      <div class="d-flex justify-content-between mb-3 flex-wrap">
+        <button type="submit" class="btn btn-danger mb-2">Delete Selected</button>
+        <a href="/download-excel" class="btn btn-success mb-2">Download as Excel file</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Name</th>
+              <th>Event Date</th>
+              <th>Submitted On</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in participants %}
+            <tr>
+              <td><input type="checkbox" name="delete_ids" value="{{ p.id }}"></td>
+              <td>{{ p.participant_name }}</td>
+              <td>{{ p.event_date.strftime('%d-%m-%Y') }}</td>
+              <td>{{ p.submitted_on.strftime('%d-%m-%Y') }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </div>
 </div>
 
-
-  <table class="table table-bordered table-hover">
-    <thead>
-      <tr>
-        <th>Select</th>
-        <th>Name</th>
-        <th>Event Date</th>
-        <th>Submitted On</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for p in participants %}
-      <tr>
-        <td><input type="checkbox" name="delete_ids" value="{{ p.id }}"></td>
-        <td>{{ p.participant_name }}</td>
-        <td>{{ p.event_date.strftime('%d-%m-%Y') }}</td>
-        <td>{{ p.submitted_on.strftime('%d-%m-%Y') }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</form>
-
-      </div>
-    </div>
   </div>
 </body>
 </html>
